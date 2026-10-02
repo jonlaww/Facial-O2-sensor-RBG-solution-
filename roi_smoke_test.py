@@ -11,9 +11,29 @@ import mediapipe as mp
 import numpy as np
 
 # Candidate skin patches for a frontal face. Verify their placement visually.
-PATCHES = {"forehead": (109, 10, 338, 151),
+PATCHES = {"forehead": (107, 9, 336, 151),
            "cheek_a": (50, 101, 205, 187),
            "cheek_b": (280, 330, 425, 411)}
+
+
+def rgb_patch_stats(rgb, rect):
+    """Sample an explicitly supplied rectangle; coordinates do not imply skin."""
+    height, width = rgb.shape[:2]
+    if not np.isfinite(rect).all():
+        return None
+    x0, y0, x1, y1 = rect
+    x0, y0 = int(np.floor(x0)), int(np.floor(y0))
+    x1, y1 = int(np.ceil(x1)), int(np.ceil(y1))
+    x0, x1 = np.clip([x0, x1], 0, width)
+    y0, y1 = np.clip([y0, y1], 0, height)
+    if x1 <= x0 or y1 <= y0:
+        return None
+    patch = rgb[y0:y1, x0:x1]
+    means = patch.mean(axis=(0, 1))
+    if not np.isfinite(means).all():
+        return None
+    return ((int(x0), int(y0), int(x1), int(y1)), means,
+            int(patch.shape[0] * patch.shape[1]))
 
 
 def roi_stats(rgb, landmarks):
@@ -27,15 +47,9 @@ def roi_stats(rgb, landmarks):
             continue
         x0, y0 = np.floor(points.min(axis=0)).astype(int)
         x1, y1 = np.ceil(points.max(axis=0)).astype(int)
-        x0, x1 = np.clip([x0, x1], 0, width)
-        y0, y1 = np.clip([y0, y1], 0, height)
-        if x1 <= x0 or y1 <= y0:
-            continue
-        patch = rgb[y0:y1, x0:x1]
-        means = patch.mean(axis=(0, 1))  # RGB input: red=0, green=1, blue=2
-        if np.isfinite(means).all():
-            result[name] = ((int(x0), int(y0), int(x1), int(y1)), means,
-                            int(patch.shape[0] * patch.shape[1]))
+        stats = rgb_patch_stats(rgb, (x0, y0, x1, y1))
+        if stats is not None:
+            result[name] = stats
     return result
 
 

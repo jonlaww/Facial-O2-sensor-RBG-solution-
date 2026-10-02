@@ -44,3 +44,11 @@ Camera data remains local. CSV files contain no saved face images, but still rec
 ## Local verification
 
 See `VERIFICATION.md` for the environment and checks completed before delivery. Actual camera placement must be reviewed on your computer.
+
+## Real-photograph tests
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+Four real photographic fixtures are bundled: three CC0 dermoscopic medical images from ISIC and one public-domain NASA face portrait via scikit-image. Provenance, attribution and SHA-256 hashes are in `tests/fixtures/sources.json`. Medical images test the same rectangle sampler used by facial ROIs and rejection of false face detections; they cannot test forehead/cheek landmark placement. The face portrait tests full FaceMesh processing on the original and three transformations. These transformations do not add independent subjects. See `tests/PHOTO_TEST_RESULTS.md` for results and limitations.
