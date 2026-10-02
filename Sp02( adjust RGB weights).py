@@ -54,8 +54,8 @@ class SpO2Estimator:
 
 
         # Add red and blue values
-        self.red_values.append(avg_color[2])  # Use avg_color instead of avg_color_forehead
-        self.blue_values.append(avg_color[0]) # Use avg_color instead of avg_color_forehead
+        self.red_values.append(avg_color[0])  # Use avg_color instead of avg_color_forehead
+        self.blue_values.append(avg_color[2]) # Use avg_color instead of avg_color_forehead
         self.green_values.append(avg_color[1])  # Adding green channel
 
 
