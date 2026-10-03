@@ -11,9 +11,12 @@ import mediapipe as mp
 import numpy as np
 
 # Candidate skin patches for a frontal face. Verify their placement visually.
-PATCHES = {"forehead": (107, 9, 336, 151),
-           "cheek_a": (50, 101, 205, 187),
-           "cheek_b": (280, 330, 425, 411)}
+# Each entry: landmark indices, then the fraction of their bounding box trimmed
+# from the (left, top, right, bottom) image edges. Trims keep the rectangle off
+# the hairline shadow and the darker outer/lower cheek, tuned on ONE portrait.
+PATCHES = {"forehead": ((107, 336, 151, 8), (0.05, 0.35, 0.05, 0.10)),
+           "cheek_a": ((50, 101, 205, 187), (0.30, 0.0, 0.0, 0.30)),
+           "cheek_b": ((280, 330, 425, 411), (0.0, 0.0, 0.30, 0.30))}
 
 
 def rgb_patch_stats(rgb, rect):
@@ -40,14 +43,15 @@ def roi_stats(rgb, landmarks):
     """Return clipped rectangles and RGB means; reject nonfinite/empty patches."""
     height, width = rgb.shape[:2]
     result = {}
-    for name, indices in PATCHES.items():
+    for name, (indices, (left, top, right, bottom)) in PATCHES.items():
         points = np.array([(landmarks[i].x * width, landmarks[i].y * height)
                            for i in indices])
         if not np.isfinite(points).all():
             continue
-        x0, y0 = np.floor(points.min(axis=0)).astype(int)
-        x1, y1 = np.ceil(points.max(axis=0)).astype(int)
-        stats = rgb_patch_stats(rgb, (x0, y0, x1, y1))
+        (x0, y0), (x1, y1) = points.min(axis=0), points.max(axis=0)
+        box_w, box_h = x1 - x0, y1 - y0
+        stats = rgb_patch_stats(rgb, (x0 + left * box_w, y0 + top * box_h,
+                                      x1 - right * box_w, y1 - bottom * box_h))
         if stats is not None:
             result[name] = stats
     return result

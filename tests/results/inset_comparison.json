@@ -1,0 +1,36 @@
+{
+  "before": {
+    "forehead": {
+      "pixels": 210,
+      "relative_spread": 0.20018527539042533,
+      "one_pixel_sensitivity": 0.062765123882089
+    },
+    "cheek_a": {
+      "pixels": 208,
+      "relative_spread": 0.12243942268819488,
+      "one_pixel_sensitivity": 0.016718941045133117
+    },
+    "cheek_b": {
+      "pixels": 210,
+      "relative_spread": 0.16059432092471257,
+      "one_pixel_sensitivity": 0.029653983656792646
+    }
+  },
+  "after": {
+    "forehead": {
+      "pixels": 171,
+      "relative_spread": 0.05973965250128296,
+      "one_pixel_sensitivity": 0.012323522373773545
+    },
+    "cheek_a": {
+      "pixels": 99,
+      "relative_spread": 0.08997807359358999,
+      "one_pixel_sensitivity": 0.011632653061224534
+    },
+    "cheek_b": {
+      "pixels": 110,
+      "relative_spread": 0.07228004975842539,
+      "one_pixel_sensitivity": 0.018649942234692258
+    }
+  }
+}

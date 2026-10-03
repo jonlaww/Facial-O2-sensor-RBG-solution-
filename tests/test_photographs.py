@@ -11,6 +11,7 @@ import numpy as np
 from roi_smoke_test import rgb_patch_stats, roi_stats
 
 FIXTURES = Path(__file__).parent / "fixtures"
+RESULTS = Path(__file__).parent / "results"
 
 
 def load(name):
@@ -91,6 +92,44 @@ class PhotographTests(unittest.TestCase):
                         x0, y0, x1, y1 = rect
                         self.assertTrue(0 <= x0 < x1 <= image.shape[1])
                         self.assertTrue(0 <= y0 < y1 <= image.shape[0])
+
+
+    def face_variants(self):
+        rgb = load("astronaut.png")
+        return {"original": rgb, "mirror": cv2.flip(rgb, 1),
+                "darker_75_percent": (rgb.astype(float) * .75).astype(np.uint8)}
+
+    def test_face_patch_placement_quality(self):
+        # Thresholds are tuned to ONE portrait, not a general skin-quality rule.
+        with mp.solutions.face_mesh.FaceMesh(static_image_mode=True,
+                                           max_num_faces=1, min_detection_confidence=0.5) as mesh:
+            for variant, image in self.face_variants().items():
+                faces = mesh.process(image).multi_face_landmarks
+                self.assertTrue(faces)
+                for name, (rect, means, _) in roi_stats(image, faces[0].landmark).items():
+                    with self.subTest(variant=variant, roi=name):
+                        x0, y0, x1, y1 = rect
+                        pixels = image[y0:y1, x0:x1].reshape(-1, 3).astype(float)
+                        self.assertLess((pixels.std(axis=0) / means).max(), 0.11)
+                        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                            _, shifted, _ = rgb_patch_stats(
+                                image, (x0 + dx, y0 + dy, x1 + dx, y1 + dy))
+                            self.assertLess((np.abs(shifted - means) / means).max(), 0.025)
+
+    def test_face_rectangles_match_reviewed_record(self):
+        # Regenerating the record requires a separate visual review.
+        recorded = {item["roi"]: item for item in
+                    json.loads((RESULTS / "measurements.json").read_text())
+                    if item["image"] == "astronaut.png"}
+        rgb = load("astronaut.png")
+        with mp.solutions.face_mesh.FaceMesh(static_image_mode=True,
+                                           max_num_faces=1, min_detection_confidence=0.5) as mesh:
+            patches = roi_stats(rgb, mesh.process(rgb).multi_face_landmarks[0].landmark)
+        self.assertEqual(set(patches), set(recorded))
+        for name, (rect, means, _) in patches.items():
+            with self.subTest(roi=name):
+                np.testing.assert_allclose(rect, recorded[name]["rect"], atol=2)
+                np.testing.assert_allclose(means, recorded[name]["rgb_mean"], rtol=0.03)
 
 
 if __name__ == "__main__":

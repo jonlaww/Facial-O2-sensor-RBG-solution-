@@ -52,3 +52,15 @@ python -m unittest discover -s tests -v
 ```
 
 Four real photographic fixtures are bundled: three CC0 dermoscopic medical images from ISIC and one public-domain NASA face portrait via scikit-image. Provenance, attribution and SHA-256 hashes are in `tests/fixtures/sources.json`. Medical images test the same rectangle sampler used by facial ROIs and rejection of false face detections; they cannot test forehead/cheek landmark placement. The face portrait tests full FaceMesh processing on the original and three transformations. These transformations do not add independent subjects. See `tests/PHOTO_TEST_RESULTS.md` for results and limitations.
+
+## External reference data
+
+`validation/uw_ratio_of_ratios.py` runs a ratio-of-ratios baseline on the open University of Washington finger-camera hypoxemia dataset (Hoffman et al., npj Digital Medicine 2022; MIT license; dataset not bundled). It needs NumPy and SciPy from the lock file:
+
+```bash
+git clone https://github.com/ubicomplab/oximetry-phone-cam-data.git
+git -C oximetry-phone-cam-data checkout c483ae8
+python validation/uw_ratio_of_ratios.py oximetry-phone-cam-data
+```
+
+The inputs are per-frame RGB means at 30 Hz with four reference pulse oximeters. This is contact finger acquisition with phone flash, not facial video. The supplied baseline was reproduced on Python 3.12.14 Linux: leave-one-subject-out red/blue RMSE 10.266 and red/green RMSE 10.316 percentage points, compared with 9.003 for the training-mean constant predictor. This particular fitted baseline under this preprocessing protocol does not outperform the constant. It does not establish that all ratio-based methods fail or validate facial oxygen estimation. Detailed protocol and limitations: `validation/UW_RESULTS.md`.
