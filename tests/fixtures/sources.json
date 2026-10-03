@@ -1,0 +1,38 @@
+[
+  {
+    "name": "ISIC_0000000.jpg",
+    "source": "https://api.isic-archive.com/api/v2/images/ISIC_0000000/",
+    "image_url": "https://isic-archive.s3.amazonaws.com/images/ISIC_0000000.jpg",
+    "license": "CC-0",
+    "attribution": "Anonymous",
+    "image_type": "dermoscopic",
+    "sha256": "fc5880144d267ae257a8e2bf25315ea5291c958a452de98c920c71904c71326e"
+  },
+  {
+    "name": "ISIC_0000001.jpg",
+    "source": "https://api.isic-archive.com/api/v2/images/ISIC_0000001/",
+    "image_url": "https://isic-archive.s3.amazonaws.com/images/ISIC_0000001.jpg",
+    "license": "CC-0",
+    "attribution": "Anonymous",
+    "image_type": "dermoscopic",
+    "sha256": "875fa906a2fc4a96ca331a4c27a28bd94da12b936315dd1ad1f1c1cb5966621d"
+  },
+  {
+    "name": "ISIC_0000002.jpg",
+    "source": "https://api.isic-archive.com/api/v2/images/ISIC_0000002/",
+    "image_url": "https://isic-archive.s3.amazonaws.com/images/ISIC_0000002.jpg",
+    "license": "CC-0",
+    "attribution": "Anonymous",
+    "image_type": "dermoscopic",
+    "sha256": "3ec774807849fcb5fa1a0f03bc8cdc639041d5735b2edfe167f8a75e3b6c30a8"
+  },
+  {
+    "name": "astronaut.png",
+    "source": "https://scikit-image.org/docs/stable/api/skimage.data.html#skimage.data.astronaut",
+    "image_url": "https://raw.githubusercontent.com/scikit-image/scikit-image/v0.24.0/skimage/data/astronaut.png",
+    "license": "Public domain according to scikit-image documentation",
+    "attribution": "NASA / Eileen Collins portrait, via scikit-image",
+    "image_type": "real face photograph",
+    "sha256": "88431cd9653ccd539741b555fb0a46b61558b301d4110412b5bc28b5e3ea6cb5"
+  }
+]

@@ -1,0 +1,27 @@
+{
+  "windows": {
+    "100001": 214,
+    "100002": 220,
+    "100003": 204,
+    "100004": 198,
+    "100005": 176,
+    "100006": 158
+  },
+  "features": {
+    "red_over_blue": {
+      "rmse_model": 10.265721382315819,
+      "rmse_constant_predictor": 9.002536703079032,
+      "pearson_r": -0.21486044375526417
+    },
+    "red_over_green": {
+      "rmse_model": 10.316033750388689,
+      "rmse_constant_predictor": 9.002536703079032,
+      "pearson_r": -0.13178782163865607
+    }
+  },
+  "reference_spo2_range": [
+    64.8125,
+    99.89
+  ],
+  "windows_below_90": 622
+}
